@@ -14,6 +14,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ import com.SpringBoot.BlackFrame.Repository.VideoRepository;
 
 @RestController
 @RequestMapping("/api/videos")
+@CrossOrigin(origins = "*")
 public class VideoController {
 
     @Autowired
@@ -35,10 +37,11 @@ public class VideoController {
     @Value("${video.storage.location}")
     private String storageLocation;
 
-    // 1. Standard MVC Upload
+    //Upload
     @PostMapping("/upload")
     public ResponseEntity<String> uploadVideo(
             @RequestParam("title") String title,
+            @RequestParam(value = "description", required = false) String description,
             @RequestParam("file") MultipartFile file) {
             
         try {
@@ -53,6 +56,7 @@ public class VideoController {
 
             Video video = new Video();
             video.setTitle(title);
+            video.setDescription(description);
             video.setFileName(fileName);
             video.setFilePath(targetPath.toString());
             video.setContentType(file.getContentType());
@@ -85,6 +89,8 @@ public class VideoController {
         
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+    
+    // 3. Get All Videos
     @GetMapping("/all")
     public ResponseEntity<List<Video>> getAllVideos() {
         List<Video> allVideos = videoRepository.findAll();

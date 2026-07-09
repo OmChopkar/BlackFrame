@@ -20,6 +20,16 @@ public class Video {
     @Column(nullable = false)
     private String title;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
     @Column(nullable = false)
     private String fileName;
 
